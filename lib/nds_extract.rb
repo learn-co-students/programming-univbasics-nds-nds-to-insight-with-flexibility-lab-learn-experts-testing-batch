@@ -21,7 +21,7 @@ def flatten_a_o_a(aoa)
 end
 
 def movie_with_director_name(director_name, movie_data)
-  { 
+  {
     :title => movie_data[:title],
     :worldwide_gross => movie_data[:worldwide_gross],
     :release_year => movie_data[:release_year],
@@ -33,7 +33,15 @@ end
 
 # Your code after this point
 
-def movies_with_director_key(name, movies_collection)
+def movies_with_director_key(name, movies_collection) #second is AoH
+  arr = []
+  i = 0
+
+  while i < movies_collection.length
+    arr << movie_with_director_name(name, movies_collection[i])
+    i += 1
+  end
+  arr # returns array of hashes
   # GOAL: For each Hash in an Array (movies_collection), provide a collection
   # of movies and a directors name to the movie_with_director_name method
   # and accumulate the returned Array of movies into a new Array that's
@@ -52,6 +60,22 @@ end
 
 
 def gross_per_studio(collection)
+
+  hash = {}
+  i = 0
+  while i < collection.length
+    studio_name = collection[i][:studio]
+    gross = collection[i][:worldwide_gross]
+    if hash[studio_name]
+      hash[studio_name] += gross
+    else
+      hash[studio_name] = gross
+    end
+    i += 1
+  end
+
+  hash
+  #binding.pry
   # GOAL: Given an Array of Hashes where each Hash represents a movie,
   # return a Hash that includes the total worldwide_gross of all the movies from
   # each studio.
@@ -66,6 +90,23 @@ def gross_per_studio(collection)
 end
 
 def movies_with_directors_set(source)
+  #binding.pry
+
+  i = 0
+  a_o_a_movies_by_dir = []
+
+  while i < source.length do
+    director_hash = source[i]
+    director_name = director_hash[:name]
+    directors_movies = director_hash[:movies] ## AoH
+    a_o_a_movies_by_dir << movies_with_director_key(director_name, directors_movies)
+
+    i += 1
+  end
+
+  a_o_a_movies_by_dir
+  #binding.pry
+
   # GOAL: For each director, find their :movies Array and stick it in a new Array
   #
   # INPUT:
@@ -84,6 +125,7 @@ end
 
 def studios_totals(nds)
   a_o_a_movies_with_director_names = movies_with_directors_set(nds)
+  #binding.pry
   movies_with_director_names = flatten_a_o_a(a_o_a_movies_with_director_names)
   return gross_per_studio(movies_with_director_names)
 end
